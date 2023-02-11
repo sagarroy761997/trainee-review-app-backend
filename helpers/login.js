@@ -22,23 +22,7 @@ const login = async (req, res) => {
           { expiresIn: "1m" }
         );
         res.cookie("accessToken", accessToken, { httpOnly: true });
-        // let data;
-        // if (user.role === 'manager'){
-        //   data=results.rows.filter(()=>{user.role == 'trainer' && user.role !=' trainee'})
-        // }
-        // else if(user.role === 'trainer'){
-        //   data=results.rows.filter(()=>{user.role == 'trainee' })
-        // }
-        // if(user.role === 'manager'){
-        //   const trainerData = results.rows
-        // }
-        res.send({
-          // authentication: 'Success',
-          // accessToken: accessToken,
-          user: user,
-          message: "email and password are correct",
-          data:results.rows
-        });
+        res.send(user);
       } else {
         res.send("password is wrong");
       }

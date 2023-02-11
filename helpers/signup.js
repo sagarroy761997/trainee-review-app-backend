@@ -3,12 +3,12 @@ const bcrypt = require("bcrypt");
 
 const signup = async (req, res) => {
   try {
-    const { first_name, last_name, roll, email, password } = req.body;
+    const { first_name, last_name,parent_email, role, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     // console.log(email, password, hashedPassword)
     pool.query(
-      "INSERT INTO users (first_name, last_name,role,email, password) VALUES ($1,$2,$3,$4,$5)",
-      [first_name,last_name,roll,email, hashedPassword],
+      "INSERT INTO users (first_name, last_name,parent_email,role,email, password) VALUES ($1,$2,$3,$4,$5,$6)",
+      [first_name,last_name,parent_email,role,email, hashedPassword],
       (error, results) => {
         if(error){
             res.send(error.message)
