@@ -1,35 +1,30 @@
 const pool = require("./../dataBase/sqlConnection");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+
 const login = async (req, res) => {
-  pool.query("SELECT * FROM users", async (error, results) => {
-    let user;
-    if (error) {
-      res.send(error.message);
-    } else {
-      user = results.rows.find((element) => element.email === req.body.email);
-    }
+  const { email, password } = req.body;
+  try {
+    const users = await pool.query(`SELECT * from users`);
+    const user = users.rows.find((element) => element.email === email);
     if (user == null) {
-      return res
-        .status(400)
-        .send("email is not correct or the user is not signed up!");
-    }
-    try {
-      if (await bcrypt.compare(req.body.password, user.password)) {
+      res.send("email is wrong or contact admin/manager");
+    } else {
+      if (await bcrypt.compare(password, user.password)) {
         const accessToken = jwt.sign(
           user,
           process.env.ACCESS_TOKEN_SECRET_KEY,
-          { expiresIn: "1m" }
+          { expiresIn: "30m" }
         );
         res.cookie("accessToken", accessToken, { httpOnly: true });
-        res.send(user);
+        res.send(user)
       } else {
         res.send("password is wrong");
       }
-    } catch {
-      res.status(500).send("error");
     }
-  });
+  } catch (error) {
+    res.send(error.message);
+  }
 };
 
 module.exports = login;
